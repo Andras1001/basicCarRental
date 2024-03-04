@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+    <title>Basic Car Rental Company</title>
+    <link rel="icon" type="image/x-icon" href="favico.png">
+</head>
+<body>
+    <div class="container">
+
+        <h1>delete car</h1>
+        <p id="deleteMessage"></p>
+        <div class="row">
+            <div class="col-md-6"><a href="index.html" class="btn btn-primary">Back to list</a></div>
+            <div class="col-md-6"><button type="submit" onclick="deleteCar()" class=" btn btn-danger">Delete</button></div>
+        </div>  
+
+    </div>
+<script>
+    //Extract car ID from URL query parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const carId = urlParams.get('id');
+
+    document.addEventListener("DOMContentLoaded", function () {   
+        var deleteMessage=document.getElementById("deleteMessage");
+
+        //Fetch car details from backend API based on car ID
+        fetch(`https://localhost:7067/api/car/${carId}`)
+            .then(response => response.json())
+            .then(car => {
+                
+                //Fill the text with current car data
+                deleteMessage.innerHTML="Are you sure you want to delete "+car.make+" "+car.model+" "+car.year+"?";
+            })
+            .catch(error => console.error('Error fetching car details:', error));  
+    });
+
+    function deleteCar(){
+
+        //Sending the car data to the backend API to delete
+        fetch(`https://localhost:7067/api/car/${carId}`, {
+                method: 'DELETE'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to delete car');
+                }
+
+                //Redirect to list page after successful deletion
+                window.location.href = 'index.html'; 
+            })
+            .catch(error => {
+                console.error('Error deleting car:', error);
+                alert('Failed to delete car');
+            });
+    }    
+</script>
+</body>
+</html>

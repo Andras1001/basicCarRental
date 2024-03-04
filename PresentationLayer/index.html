@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    
+    <title>Basic Car Rental Company</title>
+    <link rel="icon" type="image/x-icon" href="favico.png">
+</head>
+<body>
+    <div class="container">
+
+        <h1 >list of all cars</h1>        
+
+        <table id="allCarsTable" class="table table-hover">
+            <thead>
+                <tr>
+                    <td>#</td>
+                    <td>Year</td>
+                    <td>Make</td>
+                    <td>Model</td>
+                    <td>Mileage</td>
+                    <td>IsRented</td>
+                </tr>
+            </thead>
+            <tbody></tbody>            
+        </table>
+
+        <hr>
+        
+        <div class="row">            
+            <div class="col-md-12 text-left">
+                <a class="btn btn-success" href="addcar.html">Add a new car</a>
+            </div>                            
+        </div>
+
+    </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    //Fetch data from the backend API
+    fetch("https://localhost:7067/api/car")
+        .then(response => response.json())
+        .then(data => {
+
+            //Function to populate the table with fetched data
+            populateTable(data);
+        })
+        .catch(error => console.error('Error fetching data:', error));
+
+
+    //Function to populate the table with fetched data
+    function populateTable(data) {
+        var tbody = document.querySelector("#allCarsTable tbody");
+        tbody.innerHTML = ""; //Clear existing rows
+        
+        //Loop through the fetched data and create table rows
+        data.forEach(function(car, index) {
+            var row = `
+                <tr onclick="window.location='editcardata.html?id=${car.id}'" style='cursor: pointer'>
+                    <td>${index + 1}</td>
+                    <td>${car.year}</td>
+                    <td>${car.make}</td>
+                    <td>${car.model}</td>
+                    <td>${(car.mileage).toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ".")} Km</td>
+                    <td>${car.isRented ? 'Yes' : 'No'}</td>
+                </tr>
+            `;
+
+            //Append row to table body   
+            tbody.innerHTML += row;              
+        });    
+    }
+});
+</script>
+</body>
+</html>

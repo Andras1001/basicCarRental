@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+    <title>Basic Car Rental Company</title>
+    <link rel="icon" type="image/x-icon" href="favico.png">
+</head>
+<body>
+    <div class="container">
+
+        <h1>add car</h1>
+
+        <div class="container"> 
+            <form id="editForm">
+                <div class="form-group">
+                    <label for="year">Year</label>
+                    <input type="text" class="form-control" id="year" placeholder="Year">
+                </div>
+                <div class="form-group">
+                    <label for="make">Make</label>
+                    <input type="text" class="form-control" id="make" placeholder="Make">
+                </div>
+                <div class="form-group">
+                    <label for="model">Model</label>
+                    <input type="text" class="form-control" id="model" placeholder="Model">
+                </div>
+                <div class="form-group">
+                    <label for="mileage">Mileage</label>
+                    <input type="text" class="form-control" id="mileage" placeholder="Mileage">
+                </div>
+                <div class="form-group">
+                    <label for="isRented">Is Rented</label>
+                    <input type="checkbox" class="form-control" id="isRented">
+                </div>
+            </form>
+        </div>
+
+        <div class="row">            
+            <div class="col-md-6 text-left">
+                <a href="index.html" class="btn btn-primary">Back to list</a>
+            </div>
+            <div class="col-md-6 text-right">
+                <button type="submit" class="btn btn-success" onclick="addCar()">Submit</button>
+            </div>
+        </div>
+
+    </div>
+</body>
+<script>
+    function addCar() {
+        
+        //Data from the input form
+        const year = document.getElementById('year').value;
+        const make = document.getElementById('make').value;
+        const model = document.getElementById('model').value;
+        const mileage = document.getElementById('mileage').value;
+        const isRented = document.getElementById('isRented').checked;
+
+        //Create Car object from inputs
+        const carData = {
+            year: year,
+            make: make,
+            model: model,
+            mileage: mileage,
+            isRented: isRented
+        };
+
+        //Send data to the backend API
+        fetch("https://localhost:7067/api/car", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(carData)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to add car');
+            }
+
+            //Redirect to list page after successful addition
+            window.location.href = 'index.html'; 
+        })
+        .catch(error => {
+            console.error('Error adding car:', error);
+            alert('Failed to add car');
+        });
+    }
+</script>
+</html>
